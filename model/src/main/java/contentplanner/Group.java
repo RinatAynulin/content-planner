@@ -1,5 +1,7 @@
 package contentplanner;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,18 +11,19 @@ import java.util.Set;
  */
 
 @Entity
-@Table(name = "users")
+@Table(name = "groups")
 public class Group {
     @Id
     @GeneratedValue
     private long id;
-
+    @Column(name = "name")
     private String name;
 
     @ManyToOne
     @JoinColumn(name = "admin_id")
     private User admin;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "group")
     private Set<Post> posts = new HashSet<>();
 
@@ -40,10 +43,9 @@ public class Group {
         return posts;
     }
 
-    public Group(String name, User admin, Set<Post> posts) {
+    public Group(String name, User admin) {
         this.name = name;
         this.admin = admin;
-        this.posts = posts;
     }
 
     public Group() {

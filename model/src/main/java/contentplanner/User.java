@@ -14,19 +14,25 @@ import java.util.Set;
 @Table(name = "users")
 public class User {
     @Id
+    @Column(name = "id")
     @GeneratedValue
     private long id;
-
+    @Column(name = "username")
     private String username;
     @JsonIgnore
+    @Column(name = "password")
     private String password;
+    @Column(name = "email")
     private String email;
     @JsonIgnore
+    @Column(name = "token")
     private String token;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "admin")
     private Set<Group> groups = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "author")
     private Set<Post> posts = new HashSet<>();
 
@@ -61,12 +67,10 @@ public class User {
     public User() {
     }
 
-    public User(String username, String password, String email, String token, Set<Group> groups, Set<Post> posts) {
+    public User(String username, String password, String email, String token) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.token = token;
-        this.groups = groups;
-        this.posts = posts;
     }
 }
