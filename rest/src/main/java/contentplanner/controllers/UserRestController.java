@@ -1,5 +1,6 @@
-package contentplanner;
+package contentplanner.controllers;
 
+import contentplanner.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,43 +16,46 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/{username}")
-public class ContentPlannerRestController {
+public class UserRestController {
     private final UserRepository userRepository;
     private final GroupRepository groupRepository;
     private final PostRepository postRepository;
+    private final Validator validator;
 
     @Autowired
-    ContentPlannerRestController(UserRepository userRepository,
-                                 GroupRepository groupRepository,
-                                 PostRepository postRepository) {
+    UserRestController(UserRepository userRepository,
+                       GroupRepository groupRepository,
+                       PostRepository postRepository,
+                       Validator validator) {
         this.userRepository = userRepository;
         this.groupRepository = groupRepository;
         this.postRepository = postRepository;
+        this.validator = validator;
     }
 
     @RequestMapping(value = "posts", method = RequestMethod.GET)
     Collection<Post> readPosts(@PathVariable String username) {
-        validateUser(username);
+        validator.validateUser(username);
         return postRepository.findByAuthorUsername(username);
     }
 
     @RequestMapping(value = "posts/{postId}", method = RequestMethod.GET)
     Post readPost(@PathVariable("postId") String postId, @PathVariable String username) {
-        validateUser(username);
-        validateId(postId);
+        validator.validateUser(username);
+        validator.validateId(postId);
         return postRepository.findOne(Long.parseLong(postId));
     }
 
     @RequestMapping(value = "groups", method = RequestMethod.GET)
     Collection<Group> readGroups(@PathVariable String username) {
-        validateUser(username);
+        validator.validateUser(username);
         return groupRepository.findByAdminUsername(username);
     }
 
     @RequestMapping(value = "/{groupId}", method = RequestMethod.POST)
-    ResponseEntity<?> add(@PathVariable("username") String username,  @PathVariable("groupId") String groupId, @RequestBody Post input) {
-        validateUser(username);
-        validateGroup(groupId);
+    ResponseEntity<?> addGroup(@PathVariable("username") String username,  @PathVariable("groupId") String groupId, @RequestBody Post input) {
+        validator.validateUser(username);
+        validator.validateGroup(groupId);
         Group group = groupRepository.findById(Long.parseLong(groupId)).get();
         return userRepository
                 .findByUsername(username)
@@ -68,27 +72,15 @@ public class ContentPlannerRestController {
                 .orElse(ResponseEntity.noContent().build());
     }
 
-    private void validateGroup(String groupIdString) {
-        Long groupId;
-        try {
-            groupId = Long.parseLong(groupIdString);
-        } catch (NumberFormatException e) {
-            throw new AddressFormatException();
-        }
-        groupRepository.findById(groupId).orElseThrow(
-                () -> new GroupNotFoundException(groupId));
-    }
-
-    private void validateUser(String username) {
-        userRepository.findByUsername(username).orElseThrow(
-                () -> new UserNotFoundException(username));
-    }
-
-    private void validateId(String postId) {
-        try {
-            Long.parseLong(postId);
-        } catch (NumberFormatException e) {
-            throw new AddressFormatException();
-        }
+    @RequestMapping(method = RequestMethod.POST)
+    ResponseEntity<?> addGroup(@PathVariable("username") String username, @RequestBody Group input) {
+        validator.validateUser(username);
+        return userRepository
+                .findByUsername(username)
+                .map(account -> {
+                    Group result = groupRepository.save(new Group(input.getName(), account));
+                    return ResponseEntity.ok().build();
+                })
+                .orElse(ResponseEntity.noContent().build());
     }
 }
