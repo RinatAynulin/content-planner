@@ -10,8 +10,7 @@ import javax.persistence.*;
 @Table(name = "posts")
 public class Post {
     @Id
-    @GeneratedValue
-    private long id;
+    private int id;
 
     @ManyToOne
     @JoinColumn(name = "group_id")
@@ -29,10 +28,11 @@ public class Post {
     @JoinColumn(name = "author_id")
     private User author;
 
+
     public Post() {
     }
 
-    public Post(Group group, String message, String attachments, int publishDate, User author) {
+    public Post(int id, Group group, String message, String attachments, int publishDate, User author) {
         this.group = group;
         this.message = message;
         this.attachments = attachments;
@@ -40,7 +40,7 @@ public class Post {
         this.author = author;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 

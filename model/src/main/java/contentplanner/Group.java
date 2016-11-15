@@ -14,8 +14,7 @@ import java.util.Set;
 @Table(name = "groups")
 public class Group {
     @Id
-    @GeneratedValue
-    private long id;
+    private int id;
     @Column(name = "name")
     private String name;
 
@@ -27,7 +26,7 @@ public class Group {
     @OneToMany(mappedBy = "group")
     private Set<Post> posts = new HashSet<>();
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
@@ -43,7 +42,7 @@ public class Group {
         return posts;
     }
 
-    public Group(String name, User admin) {
+    public Group(int id, String name, User admin) {
         this.name = name;
         this.admin = admin;
     }

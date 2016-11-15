@@ -15,8 +15,7 @@ import java.util.Set;
 public class User {
     @Id
     @Column(name = "id")
-    @GeneratedValue
-    private long id;
+    private int id;
     @Column(name = "username")
     private String username;
     @JsonIgnore
@@ -36,7 +35,7 @@ public class User {
     @OneToMany(mappedBy = "author")
     private Set<Post> posts = new HashSet<>();
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
@@ -67,7 +66,7 @@ public class User {
     public User() {
     }
 
-    public User(String username, String password, String email, String token) {
+    public User(int id, String username, String password, String email, String token) {
         this.username = username;
         this.password = password;
         this.email = email;
