@@ -33,7 +33,7 @@ public class IndexRestController {
 
     @RequestMapping(method = RequestMethod.POST)
     ResponseEntity<?> addUser(@RequestBody User input) {
-        User result = userRepository.save(new User(input.getUsername(), input.getPassword(),
+        User result = userRepository.save(new User(input.getId(), input.getUsername(), input.getPassword(),
                 input.getEmail(), input.getToken()));
 
         URI location = ServletUriComponentsBuilder

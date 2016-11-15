@@ -1,6 +1,9 @@
 package contentplanner.controllers;
 
+import com.vk.api.sdk.exceptions.ApiException;
+import com.vk.api.sdk.exceptions.ClientException;
 import contentplanner.*;
+import contentplanner.services.ApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -56,18 +59,24 @@ public class UserRestController {
     ResponseEntity<?> addGroup(@PathVariable("username") String username,  @PathVariable("groupId") String groupId, @RequestBody Post input) {
         validator.validateUser(username);
         validator.validateGroup(groupId);
-        Group group = groupRepository.findById(Long.parseLong(groupId)).get();
+        Group group = groupRepository.findById(Integer.parseInt(groupId)).get();
         return userRepository
                 .findByUsername(username)
                 .map(account -> {
-                    Post result = postRepository.save(new Post(group, input.getMessage(), input.getAttachments(),
-                            input.getPublishDate(), account));
-
-                    URI location = ServletUriComponentsBuilder
-                            .fromCurrentRequest().path("/{id}")
-                            .buildAndExpand(result.getId()).toUri();
-
-                    return ResponseEntity.created(location).build();
+                    Post toPost = new Post(group, input.getMessage(), input.getAttachments(),
+                            input.getPublishDate(), account);
+                    try {
+                        ApiService api = new ApiService(account.getId(), account.getToken());
+                        toPost.setId(api.schedulePost(toPost));
+                        Post result = postRepository.save(toPost);
+                        URI location = ServletUriComponentsBuilder
+                                .fromCurrentRequest().path("/{id}")
+                                .buildAndExpand(result.getId()).toUri();
+                        return ResponseEntity.created(location).build();
+                    } catch (ClientException | ApiException e) {
+                        e.printStackTrace();
+                    }
+                    return ResponseEntity.noContent().build();
                 })
                 .orElse(ResponseEntity.noContent().build());
     }
@@ -78,7 +87,7 @@ public class UserRestController {
         return userRepository
                 .findByUsername(username)
                 .map(account -> {
-                    Group result = groupRepository.save(new Group(input.getName(), account));
+                    Group result = groupRepository.save(new Group(input.getId(), input.getName(), account));
                     return ResponseEntity.ok().build();
                 })
                 .orElse(ResponseEntity.noContent().build());

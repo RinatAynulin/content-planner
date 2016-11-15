@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class GroupNotFoundException extends RuntimeException {
-    public GroupNotFoundException(Long groupId) {
+    public GroupNotFoundException(int groupId) {
         super("could not find group     '" + groupId + "'.");
     }
 }

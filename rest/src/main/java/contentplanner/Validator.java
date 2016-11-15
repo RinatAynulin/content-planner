@@ -23,9 +23,9 @@ public class Validator {
     }
 
     public void validateGroup(String groupIdString) {
-        Long groupId;
+        int groupId;
         try {
-            groupId = Long.parseLong(groupIdString);
+            groupId = Integer.parseInt(groupIdString);
         } catch (NumberFormatException e) {
             throw new AddressFormatException();
         }

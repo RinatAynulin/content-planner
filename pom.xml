@@ -11,6 +11,7 @@
 	<modules>
 		<module>model</module>
         <module>rest</module>
+        <module>vk</module>
     </modules>
 	<packaging>pom</packaging>
 
