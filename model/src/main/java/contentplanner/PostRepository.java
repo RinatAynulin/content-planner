@@ -9,5 +9,5 @@ import java.util.Collection;
  */
 public interface PostRepository extends JpaRepository<Post, Long> {
     Collection<Post> findByAuthorUsername(String username);
-    Collection<Post> findByGroupId(Long id);
+    Collection<Post> findByGroupId(int id);
 }

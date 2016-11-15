@@ -33,12 +33,22 @@ public class Post {
     }
 
     public Post(int id, Group group, String message, String attachments, int publishDate, User author) {
+        this.id = id;
         this.group = group;
         this.message = message;
         this.attachments = attachments;
         this.publishDate = publishDate;
         this.author = author;
     }
+
+    public Post(Group group, String message, String attachments, int publishDate, User author) {
+        this.group = group;
+        this.message = message;
+        this.attachments = attachments;
+        this.publishDate = publishDate;
+        this.author = author;
+    }
+
 
     public int getId() {
         return id;
@@ -62,5 +72,21 @@ public class Post {
 
     public User getAuthor() {
         return author;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", group=" + group +
+                ", message='" + message + '\'' +
+                ", attachments='" + attachments + '\'' +
+                ", publishDate=" + publishDate +
+                ", author=" + author +
+                '}';
     }
 }

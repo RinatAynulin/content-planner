@@ -43,6 +43,7 @@ public class Group {
     }
 
     public Group(int id, String name, User admin) {
+        this.id = id;
         this.name = name;
         this.admin = admin;
     }

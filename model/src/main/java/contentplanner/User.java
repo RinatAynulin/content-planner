@@ -1,6 +1,7 @@
 package contentplanner;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -14,16 +15,16 @@ import java.util.Set;
 @Table(name = "users")
 public class User {
     @Id
-    @Column(name = "id")
+    @Column(name = "id") // fixme now it's vk id, change to our id and add field vkId
     private int id;
     @Column(name = "username")
     private String username;
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "password")
     private String password;
     @Column(name = "email")
     private String email;
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "token")
     private String token;
 
@@ -67,6 +68,7 @@ public class User {
     }
 
     public User(int id, String username, String password, String email, String token) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
