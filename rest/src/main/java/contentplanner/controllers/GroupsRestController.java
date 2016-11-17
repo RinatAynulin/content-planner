@@ -31,6 +31,6 @@ public class GroupsRestController {
     Group readGroup(@PathVariable("groupId") String groupId) {
         validator.validateGroup(groupId);
         validator.validateId(groupId);
-        return groupRepository.findOne(Long.parseLong(groupId));
+        return groupRepository.findOne(Integer.parseInt(groupId));
     }
 }

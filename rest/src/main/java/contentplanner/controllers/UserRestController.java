@@ -10,7 +10,9 @@ import contentplanner.repositories.GroupRepository;
 import contentplanner.repositories.PostRepository;
 import contentplanner.repositories.UserRepository;
 import contentplanner.services.ApiService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -48,11 +50,47 @@ public class UserRestController {
         return postRepository.findByAuthorUsername(username);
     }
 
-    @RequestMapping(value = "posts/{postId}", method = RequestMethod.GET)
-    Post readPost(@PathVariable("postId") String postId, @PathVariable String username) {
+    @RequestMapping(value = "{groupId}", method = RequestMethod.PUT)
+    ResponseEntity<?> updatePost(@PathVariable String username, @PathVariable String groupId, @RequestBody Post input) {
+        validator.validateUser(username);
+        validator.validateId(groupId);
+        userRepository
+                .findByUsername(username)
+                .map(account -> {
+                    try {
+                        ApiService api = new ApiService(account.getId(), account.getToken());
+                        api.editPost(input, Integer.parseInt(groupId));
+                        postRepository.updatePost(input.getId(), input.getMessage(), input.getAttachments(), input.getPublishDate());
+                        return ResponseEntity.ok().build();
+                    } catch (ClientException | ApiException e) {
+                        e.printStackTrace();
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
+                })
+                .orElse(ResponseEntity.noContent().build());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @RequestMapping(value = "/{groupId}/{postId}", method = RequestMethod.DELETE)
+    ResponseEntity<?> deletePost(@PathVariable String username, @PathVariable String groupId, @PathVariable String postId) {
         validator.validateUser(username);
         validator.validateId(postId);
-        return postRepository.findOne(Long.parseLong(postId));
+        validator.validateId(groupId);
+        userRepository
+                .findByUsername(username)
+                .map(account -> {
+                    try {
+                        ApiService api = new ApiService(account.getId(), account.getToken());
+                        api.unschedulePost(Integer.parseInt(postId), Integer.parseInt(groupId));
+                        postRepository.delete(Integer.parseInt(postId));
+                        return ResponseEntity.ok().build();
+                    } catch (ClientException | ApiException e) {
+                        e.printStackTrace();
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
+                })
+                .orElse(ResponseEntity.noContent().build());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @RequestMapping(value = "groups", method = RequestMethod.GET)
@@ -74,15 +112,17 @@ public class UserRestController {
                     try {
                         ApiService api = new ApiService(account.getId(), account.getToken());
                         toPost.setId(api.schedulePost(toPost));
+                        Logger.getLogger(UserRestController.class).info("Post was scheduled: " + toPost);
                         Post result = postRepository.save(toPost);
+                        Logger.getLogger(UserRestController.class).info("Post was added in db: " + result);
                         URI location = ServletUriComponentsBuilder
                                 .fromCurrentRequest().path("/{id}")
                                 .buildAndExpand(result.getId()).toUri();
                         return ResponseEntity.created(location).build();
                     } catch (ClientException | ApiException e) {
                         e.printStackTrace();
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
                     }
-                    return ResponseEntity.noContent().build();
                 })
                 .orElse(ResponseEntity.noContent().build());
     }

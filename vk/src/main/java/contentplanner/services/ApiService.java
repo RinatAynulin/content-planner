@@ -31,8 +31,26 @@ public class ApiService {
                 .attachments(post.getAttachments().split(","))
                 .message(post.getMessage())
                 .publishDate(post.getPublishDate())
-                .ownerId((int) (-1 * post.getGroup().getId()))
+                .ownerId(-1 * post.getGroup().getId())
                 .execute()
                 .getPostId();
+    }
+
+    public void editPost(Post post, int groupId) throws ClientException, ApiException {
+        Logger.getLogger(ApiService.class).info("I'm trying to change the post to: " + post);
+        vk.wall().edit(userActor, post.getId())
+                .ownerId(-1 * groupId)
+                .attachments(post.getAttachments())
+                .message(post.getMessage())
+                .publishDate(post.getPublishDate())
+                .execute();
+    }
+
+    public void unschedulePost(int postId, int groupId) throws ClientException, ApiException {
+        Logger.getLogger(ApiService.class).info("I'm trying to unschedule post with id " + postId);
+        vk.wall().delete(userActor)
+                .ownerId(-1 * groupId)
+                .postId(postId)
+                .execute();
     }
 }

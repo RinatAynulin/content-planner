@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Table(name = "posts") //fixme table name - post
 public class Post {
     @Id
-    private int id;
+    private int id; //fixme pk = id + group_id
 
     @ManyToOne
     @JoinColumn(name = "group_id")
