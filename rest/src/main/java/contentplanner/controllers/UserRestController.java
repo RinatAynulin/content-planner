@@ -11,6 +11,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
 
 /**
@@ -52,11 +53,11 @@ public class UserRestController {
     @RequestMapping(value = "groups", method = RequestMethod.GET)
     Collection<Group> readGroups(@PathVariable String username) {
         validator.validateUser(username);
-        return groupRepository.findByAdminUsername(username);
+        return groupRepository.findByAdminsUsername(username);
     }
 
     @RequestMapping(value = "/{groupId}", method = RequestMethod.POST)
-    ResponseEntity<?> addGroup(@PathVariable("username") String username,  @PathVariable("groupId") String groupId, @RequestBody Post input) {
+    ResponseEntity<?> addPost(@PathVariable("username") String username,  @PathVariable("groupId") String groupId, @RequestBody Post input) {
         validator.validateUser(username);
         validator.validateGroup(groupId);
         Group group = groupRepository.findById(Integer.parseInt(groupId)).get();
@@ -87,7 +88,10 @@ public class UserRestController {
         return userRepository
                 .findByUsername(username)
                 .map(account -> {
-                    Group result = groupRepository.save(new Group(input.getId(), input.getName(), account));
+                    Group result = groupRepository.save(new Group(input.getId(), input.getName()));
+                    result.setAdmins(new HashSet<User>() {{
+                        add(account);
+                    }});
                     return ResponseEntity.ok().build();
                 })
                 .orElse(ResponseEntity.noContent().build());

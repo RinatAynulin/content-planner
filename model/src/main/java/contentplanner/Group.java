@@ -18,9 +18,12 @@ public class Group {
     @Column(name = "name")
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "admin_id")
-    private User admin;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "group_administration", joinColumns = {
+            @JoinColumn(name = "group_id", nullable = false, updatable = false) },
+            inverseJoinColumns = { @JoinColumn(name = "admin_id",
+                    nullable = false, updatable = false) })
+    private Set<User> admins;
 
     @JsonIgnore
     @OneToMany(mappedBy = "group")
@@ -34,18 +37,21 @@ public class Group {
         return name;
     }
 
-    public User getAdmin() {
-        return admin;
+    public Set<User> getAdmin() {
+        return admins;
     }
 
     public Set<Post> getPosts() {
         return posts;
     }
 
-    public Group(int id, String name, User admin) {
+    public void setAdmins(Set<User> admins) {
+        this.admins = admins;
+    }
+
+    public Group(int id, String name) {
         this.id = id;
         this.name = name;
-        this.admin = admin;
     }
 
     public Group() {

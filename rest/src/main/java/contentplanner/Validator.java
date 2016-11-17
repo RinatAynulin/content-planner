@@ -40,7 +40,7 @@ public class Validator {
 
     public void validateId(String postId) {
         try {
-            Long.parseLong(postId);
+            Integer.parseInt(postId);
         } catch (NumberFormatException e) {
             throw new AddressFormatException();
         }

@@ -29,7 +29,7 @@ public class User {
     private String token;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "admin")
+    @ManyToMany(mappedBy = "admins")
     private Set<Group> groups = new HashSet<>();
 
     @JsonIgnore

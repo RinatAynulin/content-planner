@@ -34,7 +34,7 @@ public class IndexRestController {
     @RequestMapping(method = RequestMethod.POST)
     ResponseEntity<?> addUser(@RequestBody User input) {
         User result = userRepository.save(new User(input.getId(), input.getUsername(), input.getPassword(),
-                input.getEmail(), input.getToken()));
+                input.getEmail(), input.getToken())); //fixme add Service layer
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{username}")

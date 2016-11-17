@@ -7,7 +7,7 @@ import javax.persistence.*;
  */
 
 @Entity
-@Table(name = "posts")
+@Table(name = "posts") //fixme table name - post
 public class Post {
     @Id
     private int id;
