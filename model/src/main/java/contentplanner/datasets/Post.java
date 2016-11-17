@@ -1,4 +1,4 @@
-package contentplanner;
+package contentplanner.datasets;
 
 import javax.persistence.*;
 

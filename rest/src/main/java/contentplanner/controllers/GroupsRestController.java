@@ -1,16 +1,12 @@
 package contentplanner.controllers;
 
 import contentplanner.*;
+import contentplanner.datasets.Group;
+import contentplanner.repositories.GroupRepository;
+import contentplanner.repositories.PostRepository;
+import contentplanner.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.net.URI;
-import java.util.Collection;
-import java.util.Optional;
 
 /**
  * Created by Aynulin on 14.11.2016.

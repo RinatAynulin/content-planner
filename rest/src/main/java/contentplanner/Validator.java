@@ -3,6 +3,9 @@ package contentplanner;
 import contentplanner.exceptions.AddressFormatException;
 import contentplanner.exceptions.GroupNotFoundException;
 import contentplanner.exceptions.UserNotFoundException;
+import contentplanner.repositories.GroupRepository;
+import contentplanner.repositories.PostRepository;
+import contentplanner.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

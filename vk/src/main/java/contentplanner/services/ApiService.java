@@ -7,9 +7,8 @@ import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
-import contentplanner.Post;
+import contentplanner.datasets.Post;
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
 
 /**
  * Created by Aynulin on 15.11.2016.

@@ -3,6 +3,12 @@ package contentplanner.controllers;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 import contentplanner.*;
+import contentplanner.datasets.Group;
+import contentplanner.datasets.Post;
+import contentplanner.datasets.User;
+import contentplanner.repositories.GroupRepository;
+import contentplanner.repositories.PostRepository;
+import contentplanner.repositories.UserRepository;
 import contentplanner.services.ApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +18,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Optional;
 
 /**
  * Created by Aynulin on 13.11.2016.
