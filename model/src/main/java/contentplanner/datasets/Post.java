@@ -9,10 +9,11 @@ import javax.persistence.*;
 @Entity
 @Table(name = "posts") //fixme table name - post
 public class Post {
-    @Id
-    private int id; //fixme pk = id + group_id
+    @EmbeddedId
+    private PostPK id;
 
     @ManyToOne
+    @MapsId("groupId")
     @JoinColumn(name = "group_id")
     private Group group;
 
@@ -33,7 +34,7 @@ public class Post {
     }
 
     public Post(int id, Group group, String message, String attachments, int publishDate, User author) {
-        this.id = id;
+        this.id = new PostPK(id, group.getId());
         this.group = group;
         this.message = message;
         this.attachments = attachments;
@@ -42,6 +43,7 @@ public class Post {
     }
 
     public Post(Group group, String message, String attachments, int publishDate, User author) {
+        this.id = new PostPK(group.getId());
         this.group = group;
         this.message = message;
         this.attachments = attachments;
@@ -49,8 +51,7 @@ public class Post {
         this.author = author;
     }
 
-
-    public int getId() {
+    public PostPK getId() {
         return id;
     }
 
@@ -74,8 +75,20 @@ public class Post {
         return author;
     }
 
-    public void setId(int id) {
+    public void setId(PostPK id) {
         this.id = id;
+    }
+
+    public void setPostId(int postId) {
+        id.setPostId(postId);
+    }
+
+    public int getGroupId(int groupId) {
+        return id.getGroupId();
+    }
+
+    public void setGroupId(int groupId) {
+        id.setGroupId(groupId);
     }
 
     @Override

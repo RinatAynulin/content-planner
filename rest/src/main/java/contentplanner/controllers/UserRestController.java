@@ -5,6 +5,7 @@ import com.vk.api.sdk.exceptions.ClientException;
 import contentplanner.*;
 import contentplanner.datasets.Group;
 import contentplanner.datasets.Post;
+import contentplanner.datasets.PostPK;
 import contentplanner.datasets.User;
 import contentplanner.repositories.GroupRepository;
 import contentplanner.repositories.PostRepository;
@@ -50,17 +51,16 @@ public class UserRestController {
         return postRepository.findByAuthorUsername(username);
     }
 
-    @RequestMapping(value = "{groupId}", method = RequestMethod.PUT)
-    ResponseEntity<?> updatePost(@PathVariable String username, @PathVariable String groupId, @RequestBody Post input) {
+    @RequestMapping(method = RequestMethod.PUT)
+    ResponseEntity<?> updatePost(@PathVariable String username, @RequestBody Post input) {
         validator.validateUser(username);
-        validator.validateId(groupId);
         userRepository
                 .findByUsername(username)
                 .map(account -> {
                     try {
                         ApiService api = new ApiService(account.getId(), account.getToken());
-                        api.editPost(input, Integer.parseInt(groupId));
-                        postRepository.updatePost(input.getId(), input.getMessage(), input.getAttachments(), input.getPublishDate());
+                        api.editPost(input, input.getId().getGroupId());
+                        postRepository.updatePost(input.getId().getPostId(), input.getId().getGroupId(), input.getMessage(), input.getAttachments(), input.getPublishDate());
                         return ResponseEntity.ok().build();
                     } catch (ClientException | ApiException e) {
                         e.printStackTrace();
@@ -82,7 +82,7 @@ public class UserRestController {
                     try {
                         ApiService api = new ApiService(account.getId(), account.getToken());
                         api.unschedulePost(Integer.parseInt(postId), Integer.parseInt(groupId));
-                        postRepository.delete(Integer.parseInt(postId));
+                        postRepository.delete(new PostPK(Integer.parseInt(postId), Integer.parseInt(groupId)));
                         return ResponseEntity.ok().build();
                     } catch (ClientException | ApiException e) {
                         e.printStackTrace();
@@ -111,7 +111,7 @@ public class UserRestController {
                             input.getPublishDate(), account);
                     try {
                         ApiService api = new ApiService(account.getId(), account.getToken());
-                        toPost.setId(api.schedulePost(toPost));
+                        toPost.setPostId(api.schedulePost(toPost));
                         Logger.getLogger(UserRestController.class).info("Post was scheduled: " + toPost);
                         Post result = postRepository.save(toPost);
                         Logger.getLogger(UserRestController.class).info("Post was added in db: " + result);

@@ -38,7 +38,7 @@ public class ApiService {
 
     public void editPost(Post post, int groupId) throws ClientException, ApiException {
         Logger.getLogger(ApiService.class).info("I'm trying to change the post to: " + post);
-        vk.wall().edit(userActor, post.getId())
+        vk.wall().edit(userActor, post.getId().getPostId())
                 .ownerId(-1 * groupId)
                 .attachments(post.getAttachments())
                 .message(post.getMessage())
