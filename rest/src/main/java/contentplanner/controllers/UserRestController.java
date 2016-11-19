@@ -82,7 +82,7 @@ public class UserRestController {
                     try {
                         ApiService api = new ApiService(account.getId(), account.getToken());
                         api.unschedulePost(Integer.parseInt(postId), Integer.parseInt(groupId));
-                        postRepository.delete(new PostPK(Integer.parseInt(postId), Integer.parseInt(groupId)));
+                        postRepository.delete(new PostPK(Integer.parseInt(groupId), Integer.parseInt(postId)));
                         return ResponseEntity.ok().build();
                     } catch (ClientException | ApiException e) {
                         e.printStackTrace();

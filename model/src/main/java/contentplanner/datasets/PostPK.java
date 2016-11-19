@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Embeddable
 public class PostPK implements Serializable {
 
-    @Column(name = "post_id")
+    @Column(name = "id")
     protected int postId; //postid
 
     @Column(name = "group_id")

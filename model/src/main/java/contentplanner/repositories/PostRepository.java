@@ -16,7 +16,7 @@ import java.util.Collection;
 public interface PostRepository extends JpaRepository<Post, PostPK> {
     Collection<Post> findByAuthorUsername(String username);
 
-    Collection<Post> findByGroupId(int id);
+    Collection<Post> findByIdGroupId(int id);
 
     Collection<Post> findByPublishDateGreaterThan(int publishDate); // use with current time for getting future posts
 
@@ -24,7 +24,7 @@ public interface PostRepository extends JpaRepository<Post, PostPK> {
     @Transactional
     @Query("update Post p set p.message=:message" +
             ", p.attachments=:attachments" +
-            ", p.publishDate=:publishDate  where p.id=:id and p.groupId=:groupId")
+            ", p.publishDate=:publishDate  where p.id.postId=:id and p.id.groupId=:groupId")
     public void updatePost(@Param("id") int id, @Param("groupId") int groupId, @Param("message") String message,
                                   @Param("attachments") String attachments, @Param("publishDate") int publishDate);
 }
