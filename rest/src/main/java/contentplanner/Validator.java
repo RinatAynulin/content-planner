@@ -36,11 +36,6 @@ public class Validator {
                 () -> new GroupNotFoundException(groupId));
     }
 
-    public void validateUser(String username) {
-        userRepository.findByUsername(username).orElseThrow(
-                () -> new UserNotFoundException(username));
-    }
-
     public void validateId(String postId) {
         try {
             Integer.parseInt(postId);

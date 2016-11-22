@@ -20,14 +20,28 @@ public class Group {
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "group_administration", joinColumns = {
-            @JoinColumn(name = "group_id", nullable = false, updatable = false) },
-            inverseJoinColumns = { @JoinColumn(name = "admin_id",
-                    nullable = false, updatable = false) })
+            @JoinColumn(name = "group_id", nullable = false, updatable = false)},
+            inverseJoinColumns = {@JoinColumn(name = "admin_id",
+                    nullable = false, updatable = false)})
     private Set<User> admins;
 
     @JsonIgnore
     @OneToMany(mappedBy = "group")
     private Set<Post> posts = new HashSet<>();
+
+    public Group(int id, String name, Set<User> admins) {
+        this.id = id;
+        this.name = name;
+        this.admins = admins;
+    }
+
+    public Group(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Group() {
+    }
 
     public int getId() {
         return id;
@@ -47,13 +61,5 @@ public class Group {
 
     public void setAdmins(Set<User> admins) {
         this.admins = admins;
-    }
-
-    public Group(int id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public Group() {
     }
 }

@@ -29,7 +29,6 @@ public class Post {
     @JoinColumn(name = "author_id")
     private User author;
 
-
     public Post() {
     }
 
@@ -83,7 +82,7 @@ public class Post {
         id.setPostId(postId);
     }
 
-    public int getGroupId(int groupId) {
+    public int getGroupId() {
         return id.getGroupId();
     }
 
@@ -101,5 +100,9 @@ public class Post {
                 ", publishDate=" + publishDate +
                 ", author=" + author +
                 '}';
+    }
+
+    public int getPostId() {
+        return id.getPostId();
     }
 }

@@ -2,9 +2,7 @@ package contentplanner.controllers;
 
 import contentplanner.*;
 import contentplanner.datasets.User;
-import contentplanner.repositories.GroupRepository;
-import contentplanner.repositories.PostRepository;
-import contentplanner.repositories.UserRepository;
+import contentplanner.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,23 +19,18 @@ import java.net.URI;
 
 @RestController
 public class IndexRestController {
-    private final UserRepository userRepository;
-    private final GroupRepository groupRepository;
-    private final PostRepository postRepository;
+    private final UserService userService;
     private final Validator validator;
 
     @Autowired
-    public IndexRestController(UserRepository userRepository, GroupRepository groupRepository, PostRepository postRepository, Validator validator) {
-        this.userRepository = userRepository;
-        this.groupRepository = groupRepository;
-        this.postRepository = postRepository;
+    public IndexRestController(UserService userService, Validator validator) {
+        this.userService = userService;
         this.validator = validator;
     }
 
     @RequestMapping(method = RequestMethod.POST)
     ResponseEntity<?> addUser(@RequestBody User input) {
-        User result = userRepository.save(new User(input.getId(), input.getUsername(), input.getPassword(),
-                input.getEmail(), input.getToken())); //fixme add Service layer
+        User result = userService.addUser(input);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{username}")

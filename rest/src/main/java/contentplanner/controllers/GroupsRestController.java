@@ -2,11 +2,11 @@ package contentplanner.controllers;
 
 import contentplanner.*;
 import contentplanner.datasets.Group;
-import contentplanner.repositories.GroupRepository;
-import contentplanner.repositories.PostRepository;
-import contentplanner.repositories.UserRepository;
+import contentplanner.services.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 /**
  * Created by Aynulin on 14.11.2016.
@@ -14,23 +14,19 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/groups")
 public class GroupsRestController {
-    private final UserRepository userRepository;
-    private final GroupRepository groupRepository;
-    private final PostRepository postRepository;
+    private final GroupService groupService;
     private final Validator validator;
 
     @Autowired
-    public GroupsRestController(UserRepository userRepository, GroupRepository groupRepository, PostRepository postRepository, Validator validator) {
-        this.userRepository = userRepository;
-        this.groupRepository = groupRepository;
-        this.postRepository = postRepository;
+    public GroupsRestController(GroupService groupService, Validator validator) {
+        this.groupService = groupService;
         this.validator = validator;
     }
 
     @RequestMapping(value = "{groupId}", method = RequestMethod.GET)
-    Group readGroup(@PathVariable("groupId") String groupId) {
+    Optional<Group> readGroup(@PathVariable("groupId") String groupId) {
         validator.validateGroup(groupId);
         validator.validateId(groupId);
-        return groupRepository.findOne(Integer.parseInt(groupId));
+        return groupService.getGroup(Integer.parseInt(groupId));
     }
 }
